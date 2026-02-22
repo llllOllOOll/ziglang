@@ -1,0 +1,31 @@
+steps:
+  - name: publish 0.12.0
+    image: woodpeckerci/plugin-kaniko
+    settings:
+      dockerfile: Dockerfile_012
+      context: .
+      registry: registry-1.docker.io
+      repo: ziglings/ziglang
+      tags: 0.12.0
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_token
+    when:
+      event: [push]
+
+  - name: publish latest
+    image: woodpeckerci/plugin-kaniko
+    settings:
+      dockerfile: Dockerfile
+      context: .
+      registry: registry-1.docker.io
+      repo: ziglings/ziglang
+      tags: latest
+      username:
+        from_secret: docker_user
+      password:
+        from_secret: docker_token
+    when:
+      event: [push, cron]
+      cron: daily*

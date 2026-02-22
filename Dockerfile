@@ -1,20 +1,34 @@
-FROM busybox AS base
+FROM debian:bookworm-slim AS base
 
-LABEL maintainer "ziglings.org"
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    curl \
+    unzip \
+    xz-utils \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+LABEL author="spider.org"
+LABEL description="Minimal docker container for using the Zig toolchain for automated testing."
 
 ENV ZIG_VERSION=master
 ENV ZIG_PATH=/zig/${ZIG_VERSION}/files
 
-RUN wget -q https://github.com/marler8997/zigup/releases/download/v2023_07_27/zigup.ubuntu-latest-x86_64.zip && \
-    unzip zigup.ubuntu-latest-x86_64.zip -d /usr/bin \
+RUN curl -L https://github.com/marler8997/zigup/releases/download/v2024_03_13/zigup.ubuntu-latest-x86_64.zip -o /tmp/zigup.zip && \
+    unzip /tmp/zigup.zip -d /usr/bin \
     && chmod +x /usr/bin/zigup \
-    && zigup --install-dir /zig $ZIG_VERSION \
+    && zigup $ZIG_VERSION --install-dir /zig \
     && chmod -R a+w ${ZIG_PATH} \
-    && rm zigup.ubuntu-latest-x86_64.zip /usr/bin/zigup
+    && rm /tmp/zigup.zip /usr/bin/zigup
 
-FROM busybox AS build
+FROM debian:bookworm-slim AS build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=base /zig/master/files/lib /lib
-COPY --from=base /usr/bin/zig /bin/zig
+COPY --from=base /zig/master/files/zig /bin/zig
+RUN /bin/zig version
 
 CMD ["sh"]
