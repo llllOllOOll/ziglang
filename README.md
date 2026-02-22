@@ -2,6 +2,10 @@
 
 A high-performance Docker template providing a minimal, production-ready environment for the Zig development branch (master). This image is meticulously crafted to serve as the backbone for building modern systems, including the Spider Web Framework and the Grape Engine.
 
+## Available on Docker Hub
+
+The image is available on Docker Hub: [llllollooll/zig](https://hub.docker.com/repository/docker/llllollooll/zig/general)
+
 ## Key Features
 
 - **Daily Updates**: Automatically rebuilt every night with the absolute latest Zig master commits.
