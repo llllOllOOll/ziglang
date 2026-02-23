@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
     xz-utils \
     libpq-dev \
+    && for f in /usr/include/postgresql/*.h; do ln -sf "$f" "/usr/include/$(basename $f)"; done \
     && rm -rf /var/lib/apt/lists/*
 
 LABEL author="spider.org"
@@ -25,6 +26,7 @@ FROM debian:bookworm-slim AS build
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
+    && for f in /usr/include/postgresql/*.h; do ln -sf "$f" "/usr/include/$(basename $f)"; done \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=base /zig/master/files/lib /lib

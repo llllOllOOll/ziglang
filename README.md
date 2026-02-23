@@ -9,7 +9,7 @@ The image is available on Docker Hub: [llllollooll/zig](https://hub.docker.com/r
 ## Key Features
 
 - **Daily Updates**: Automatically rebuilt every night with the absolute latest Zig master commits.
-- **Database Integration**: Pre-loaded with libpq headers for seamless PostgreSQL development.
+- **PostgreSQL Ready**: Pre-installed libpq-dev with headers symlinked to standard paths (`/usr/include/libpq-fe.h`, etc.) - works out of the box with `@cImport` for libpq.
 - **Minimalist Architecture**: Designed specifically for multi-stage builds to produce ultra-small (sub-1MB) scratch containers.
 - **Ecosystem Ready**: Fully compatible with the Spider Web Framework directory hierarchy.
 
