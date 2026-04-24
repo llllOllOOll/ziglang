@@ -9,16 +9,30 @@ The image is available on Docker Hub: [llllollooll/zig](https://hub.docker.com/r
 ## Key Features
 
 - **Daily Updates**: Automatically rebuilt every night with the absolute latest Zig master commits.
-- **PostgreSQL Ready**: Pre-installed libpq-dev with headers symlinked to standard paths (`/usr/include/libpq-fe.h`, etc.) - works out of the box with `@cImport` for libpq.
+- **PostgreSQL Ready**: Pre-installed libpq-dev with headers symlinked to standard paths (`/usr/include/libpq-fe.h`, etc.) - works out of the box with libpq.
 - **Minimalist Architecture**: Designed specifically for multi-stage builds to produce ultra-small (sub-1MB) scratch containers.
 - **Ecosystem Ready**: Fully compatible with the Spider Web Framework directory hierarchy.
 
-## How to Build Locally
+## Build and Push
 
-To build the image on your machine, run from the repository root:
+To build and push a new version to Docker Hub:
 
 ```bash
+# Login to Docker Hub
+docker login --username llllollooll
+
+# Build the image
 docker build -t llllollooll/zig:master .
+
+# Push to Docker Hub
+docker push llllollooll/zig:master
+```
+
+Or use the `:0.17.0` tag for a specific version:
+
+```bash
+docker tag llllollooll/zig:master llllollooll/zig:0.17.0
+docker push llllollooll/zig:0.17.0
 ```
 
 ## Quick Integration
