@@ -1,9 +1,13 @@
 FROM debian:bookworm-slim AS base
+
 ARG TARGETARCH
-ARG ZIG_VERSION=0.17.0-dev.296+a85a29ae4
+ARG ZIG_VERSION=0.17.0-dev.93+76174e1bc
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates curl xz-utils \
+    ca-certificates curl xz-utils libpq-dev \
+    && for f in /usr/include/postgresql/*.h; do \
+         ln -sf "$f" "/usr/include/$(basename $f)"; \
+       done \
     && rm -rf /var/lib/apt/lists/*
 
 RUN case "${TARGETARCH}" in \
@@ -11,16 +15,19 @@ RUN case "${TARGETARCH}" in \
       arm64) ZIG_ARCH="aarch64" ;; \
       *) echo "Arch não suportada: ${TARGETARCH}" && exit 1 ;; \
     esac && \
-    curl -fsSL "https://ziglang.org/builds/zig-${ZIG_ARCH}-linux-${ZIG_VERSION}.tar.xz" \
+    curl -fsSL "https://ziglang.org/builds/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}.tar.xz" \
     | tar -xJ -C /opt && \
-    mv "/opt/zig-${ZIG_ARCH}-linux-${ZIG_VERSION}" /opt/zig
+    mv "/opt/zig-linux-${ZIG_ARCH}-${ZIG_VERSION}" /opt/zig
 
 # ---
 
 FROM debian:bookworm-slim AS build
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ca-certificates \
+    libpq-dev \
+    && for f in /usr/include/postgresql/*.h; do \
+         ln -sf "$f" "/usr/include/$(basename $f)"; \
+       done \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=base /opt/zig /opt/zig
@@ -29,6 +36,6 @@ ENV PATH="/opt/zig:$PATH"
 RUN zig version
 
 LABEL author="spider.org"
-LABEL description="Minimal docker container for Zig master ARM64/x86_64"
+LABEL description="Minimal docker container for Zig 0.17.0-dev ARM64/x86_64"
 
 CMD ["sh"]
